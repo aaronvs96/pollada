@@ -456,7 +456,7 @@ function renderPiezas(day){
       <div class="track"><div class="fill pecho" style="width:${(d.piezas.pecho/max*100).toFixed(1)}%;"></div></div>
       <div class="amt">${fmtInt(d.piezas.pecho)}</div>
     </div>
-    <p class="note">Solo cuenta los pedidos donde se especificó el corte; ${fmtInt(d.kpi.polladas - (d.piezas.pierna + d.piezas.pecho) >= 0 ? d.kpi.polladas : 0)} unidades fueron vendidas sin preferencia registrada.</p>
+    <p class="note">Solo cuenta los pedidos donde se especificó el corte; ${fmtInt(d.kpi.polladas - (d.piezas.pierna + d.piezas.pecho))} unidades fueron vendidas sin preferencia registrada.</p>
   `;
 }
 
