@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pollada 06 de setiembre — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FAF1DE;
+    --cream-2: #F0E2BE;
+    --ink: #2A1B12;
+    --ink-soft: #5A493B;
+    --ember: #B23A1A;
+    --ember-soft: #D8672F;
+    --amber: #C6900F;
+    --charcoal: #201A15;
+    --tan-line: #DCC9A0;
+    --font-display: "Fraunces", serif;
+    --font-body: "IBM Plex Sans", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 1.5rem 5rem;}
+
+  /* Header */
+  header{
+    background:var(--charcoal);
+    color:var(--cream);
+    padding:2.2rem 0 2.6rem;
+    margin-bottom:0;
+  }
+  header .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1.5rem;}
+  header h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:2rem;
+    margin:0 0 .3rem;
+    letter-spacing:.2px;
+  }
+  header p{margin:0;color:#C9BBA6;font-size:.95rem;}
+  nav.tabs{display:flex;gap:.4rem;}
+  nav.tabs button{
+    font-family:var(--font-body);
+    font-size:.9rem;
+    font-weight:600;
+    color:#C9BBA6;
+    background:transparent;
+    border:1px solid #4A3E31;
+    padding:.55rem 1.1rem;
+    cursor:pointer;
+    border-radius:0;
+  }
+  nav.tabs button.active{
+    background:var(--ember);
+    border-color:var(--ember);
+    color:#FFF1E6;
+  }
+  nav.tabs button:hover:not(.active){border-color:#7A6A56;}
+
+  /* Hero */
+  .hero{
+    padding:3rem 0 2.2rem;
+    border-bottom:1px dashed var(--tan-line);
+  }
+  .hero .eyebrow{font-size:.85rem;color:var(--ink-soft);margin:0 0 .4rem;}
+  .hero .big-number{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:4.2rem;
+    line-height:1;
+    color:var(--ember);
+    margin:0;
+    letter-spacing:-1px;
+  }
+  .hero .big-label{font-size:1.05rem;margin:.4rem 0 1rem;color:var(--ink);}
+  .hero .breakdown{display:flex;gap:2rem;flex-wrap:wrap;font-family:var(--font-mono);font-size:.9rem;color:var(--ink-soft);}
+  .hero .breakdown b{color:var(--ink);font-weight:600;}
+
+  /* KPI ticket cards */
+  .kpi-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:0;
+    margin:2.2rem 0;
+    border:1px solid var(--tan-line);
+  }
+  .kpi{
+    padding:1.1rem 1.2rem;
+    border-right:1px dashed var(--tan-line);
+    background:var(--cream);
+  }
+  .kpi:last-child{border-right:none;}
+  .kpi .label{font-size:.78rem;color:var(--ink-soft);margin:0 0 .35rem;}
+  .kpi .value{font-family:var(--font-mono);font-size:1.35rem;font-weight:600;margin:0;color:var(--ink);}
+  .kpi .value.pos{color:var(--ember);}
+
+  section{margin:3rem 0;}
+  section h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:1.5rem;
+    margin:0 0 .3rem;
+  }
+  section .sub{color:var(--ink-soft);font-size:.9rem;margin:0 0 1.6rem;}
+
+  /* Comparativo bar chart */
+  .barchart{
+    display:flex;
+    gap:2.5rem;
+    align-items:flex-end;
+    height:210px;
+    padding:1.5rem 0 0;
+    border-bottom:2px dashed var(--tan-line);
+  }
+  .bar-group{display:flex;flex-direction:column;align-items:center;gap:.6rem;flex:1;}
+  .bar-pair{display:flex;gap:.5rem;align-items:flex-end;height:170px;}
+  .bar{width:34px;background:var(--ember);position:relative;min-height:2px;}
+  .bar.domingo{background:var(--amber);}
+  .bar .val{
+    position:absolute;top:-24px;left:50%;transform:translateX(-50%);
+    font-family:var(--font-mono);font-size:.72rem;white-space:nowrap;color:var(--ink-soft);
+  }
+  .bar-group .glabel{font-size:.85rem;font-weight:600;margin-top:.2rem;}
+  .legend{display:flex;gap:1.6rem;margin-top:1.1rem;font-size:.85rem;color:var(--ink-soft);}
+  .legend span{display:inline-flex;align-items:center;gap:.4rem;}
+  .swatch{width:11px;height:11px;display:inline-block;}
+  .swatch.sabado{background:var(--ember);}
+  .swatch.domingo{background:var(--amber);}
+
+  /* Ranking horizontal */
+  .rank-row{display:grid;grid-template-columns:140px 1fr 90px;gap:.9rem;align-items:center;margin-bottom:.65rem;}
+  .rank-row .name{font-size:.88rem;font-weight:600;}
+  .rank-row .track{height:13px;background:var(--cream-2);position:relative;}
+  .rank-row .fill{height:100%;background:var(--ember);}
+  .rank-row .amt{font-family:var(--font-mono);font-size:.82rem;text-align:right;color:var(--ink-soft);}
+
+  /* Piezas + inversion two-col layout */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;}
+  @media (max-width:700px){.two-col{grid-template-columns:1fr;}}
+  .piece-row{display:grid;grid-template-columns:70px 1fr 60px;gap:.8rem;align-items:center;margin-bottom:.8rem;}
+  .piece-row .track{height:16px;background:var(--cream-2);}
+  .piece-row .fill{height:100%;background:var(--ember);}
+  .piece-row .fill.pecho{background:var(--amber);}
+  .piece-row .amt{font-family:var(--font-mono);font-size:.85rem;}
+
+  .inv-track{height:26px;background:var(--cream-2);display:flex;margin:1rem 0 .8rem;}
+  .inv-fill{height:100%;}
+  .inv-fill.adelanto{background:var(--ember);}
+  .inv-fill.falta{background:repeating-linear-gradient(45deg, var(--cream-2), var(--cream-2) 6px, #D8CBA6 6px, #D8CBA6 12px); border-left:1px dashed var(--ink-soft);}
+  .inv-legend{display:flex;gap:1.6rem;font-size:.85rem;color:var(--ink-soft);flex-wrap:wrap;}
+  .inv-legend b{color:var(--ink);font-family:var(--font-mono);font-weight:600;}
+
+  /* Tabla */
+  .table-controls{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;}
+  .table-controls input{
+    font-family:var(--font-body);
+    font-size:.9rem;
+    padding:.6rem .8rem;
+    border:1px solid var(--tan-line);
+    background:#fff;
+    flex:1;
+    min-width:200px;
+    border-radius:0;
+  }
+  .table-count{font-size:.85rem;color:var(--ink-soft);align-self:center;}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  thead th{
+    text-align:left;
+    font-size:.78rem;
+    color:var(--ink-soft);
+    font-weight:600;
+    padding:.5rem .6rem;
+    border-bottom:1px solid var(--ink);
+  }
+  tbody td{padding:.55rem .6rem;border-bottom:1px dashed var(--tan-line);}
+  tbody tr:hover{background:var(--cream-2);}
+  td.num{font-family:var(--font-mono);text-align:right;}
+  td.day-tag{font-size:.75rem;color:var(--ink-soft);}
+
+  footer{
+    text-align:center;
+    font-size:.8rem;
+    color:var(--ink-soft);
+    padding:2rem 0 1rem;
+  }
+  .note{
+    font-size:.82rem;
+    color:var(--ink-soft);
+    border-left:2px solid var(--tan-line);
+    padding-left:.9rem;
+    margin-top:1.2rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <h1>Pollada · 06 de setiembre 2026</h1>
+      <p>Dashboard de ventas, inversión y ganancia</p>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-day="sabado">Sábado</button>
+      <button data-day="domingo">Domingo</button>
+      <button data-day="total" class="active">Total evento</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="margin-top:0;">
+    <p class="eyebrow" id="heroEyebrow">Total del evento</p>
+    <p class="big-number" id="heroGanancia">S/ 2,925.60</p>
+    <p class="big-label">ganancia neta</p>
+    <div class="breakdown">
+      <span>Ingresos: <b id="heroIngresos">S/ 5,760.00</b></span>
+      <span>Inversión: <b id="heroInversion">S/ 2,834.40</b></span>
+      <span>Polladas vendidas: <b id="heroPolladas">288</b></span>
+    </div>
+  </section>
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <section>
+    <h2>Sábado vs. domingo</h2>
+    <p class="sub">Comparación de ingresos, inversión y ganancia entre los dos días</p>
+    <div class="barchart" id="comparativo"></div>
+    <div class="legend">
+      <span><i class="swatch sabado"></i>Sábado</span>
+      <span><i class="swatch domingo"></i>Domingo</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ranking de vendedores</h2>
+    <p class="sub" id="rankingSub">Cantidad de polladas y monto recaudado por cada responsable de venta</p>
+    <div id="ranking"></div>
+    <p class="note">"Cin" (sábado) y "Cinthya" (domingo) se unificaron como una sola persona en la vista Total, ya que corresponden al mismo nombre.</p>
+  </section>
+
+  <section>
+    <div class="two-col">
+      <div>
+        <h2>Pierna vs. pecho</h2>
+        <p class="sub">Preferencias de corte especificadas en los pedidos</p>
+        <div id="piezas"></div>
+      </div>
+      <div>
+        <h2>Estado de la inversión</h2>
+        <p class="sub">Cuánto se adelantó y cuánto falta por cancelar</p>
+        <div id="inversion"></div>
+        <div class="inv-legend" id="invLegend"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Detalle de pedidos</h2>
+    <p class="sub">Lista completa de compradores, extraída de las columnas A–H de cada hoja</p>
+    <div class="table-controls">
+      <input type="text" id="searchInput" placeholder="Buscar por comprador, responsable o entrega...">
+      <span class="table-count" id="tableCount"></span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th id="colDay" style="display:none;">Día</th>
+          <th>Entrega</th>
+          <th>Responsable</th>
+          <th>Comprador</th>
+          <th style="text-align:right;">Cant.</th>
+          <th style="text-align:right;">Monto</th>
+          <th style="text-align:right;">Pierna</th>
+          <th style="text-align:right;">Pecho</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </section>
+
+  <footer>Dashboard generado a partir de las hojas "Sábado" y "Domingo" del Google Sheets de la pollada.</footer>
+</div>
+
+<script>
+/* ===================== DATOS ===================== */
+const API_URL = "https://script.google.com/macros/s/AKfycbzwh2iuoWanBDey7zcjYL8cxn-vXxSOmiESDOk6UN05cIe-gTGPk-MImuEC3sSDCY6U/exec";
+
+const COSTO_UNIDAD = {
+  sabado: 10,
+  domingo: 9.80
+};
+
+let DATA = {
+  sabado: { pedidos: [] },
+  domingo: { pedidos: [] }
+};
+
+const DAYS = {};
+
+function construirDias() {
+  for (const day of ["sabado", "domingo"]) {
+    const pedidos = DATA[day].pedidos || [];
+    const polladas = pedidos.reduce((s,p) => s + Number(p.cantidad || 0), 0);
+    const ingresos = pedidos.reduce((s,p) => s + Number(p.monto || 0), 0);
+    const inversion = polladas * COSTO_UNIDAD[day];
+
+    // Se conservan los adelantos del dashboard original.
+    const adelanto = day === "sabado" ? 150 : 600;
+    const falta = Math.max(0, inversion - adelanto);
+
+    const piezas = {
+      pierna: pedidos.reduce((s,p) => s + Number(p.pierna || 0), 0),
+      pecho: pedidos.reduce((s,p) => s + Number(p.pecho || 0), 0)
+    };
+
+    const vendedoresMap = {};
+    pedidos.forEach(p => {
+      const nombre = String(p.responsable || "Sin responsable").trim() || "Sin responsable";
+      if (!vendedoresMap[nombre]) vendedoresMap[nombre] = {nombre, cantidad:0, monto:0};
+      vendedoresMap[nombre].cantidad += Number(p.cantidad || 0);
+      vendedoresMap[nombre].monto += Number(p.monto || 0);
+    });
+
+    DAYS[day] = {
+      label: day === "sabado" ? "Sábado" : "Domingo",
+      eyebrow: day === "sabado" ? "Sábado 06 de setiembre" : "Domingo 07 de setiembre",
+      kpi: {
+        polladas, precioUnidad: 20, ingresos,
+        costoUnidad: COSTO_UNIDAD[day],
+        inversion, adelanto, falta,
+        ganancia: ingresos - inversion
+      },
+      piezas,
+      vendedores: Object.values(vendedoresMap).sort((a,b) => b.monto - a.monto),
+      pedidos
+    };
+  }
+
+  const s = DAYS.sabado, d = DAYS.domingo;
+  const totalV = {};
+  [...s.vendedores, ...d.vendedores].forEach(v => {
+    if (!totalV[v.nombre]) totalV[v.nombre] = {nombre:v.nombre, cantidad:0, monto:0};
+    totalV[v.nombre].cantidad += v.cantidad;
+    totalV[v.nombre].monto += v.monto;
+  });
+
+  DAYS.total = {
+    label:"Total evento",
+    eyebrow:"Total del evento",
+    kpi:{
+      polladas:s.kpi.polladas + d.kpi.polladas,
+      ingresos:s.kpi.ingresos + d.kpi.ingresos,
+      inversion:s.kpi.inversion + d.kpi.inversion,
+      adelanto:s.kpi.adelanto + d.kpi.adelanto,
+      falta:s.kpi.falta + d.kpi.falta,
+      ganancia:s.kpi.ganancia + d.kpi.ganancia
+    },
+    piezas:{
+      pierna:s.piezas.pierna + d.piezas.pierna,
+      pecho:s.piezas.pecho + d.piezas.pecho
+    },
+    vendedores:Object.values(totalV).sort((a,b) => b.monto - a.monto),
+    pedidos:s.pedidos.concat(d.pedidos)
+  };
+}
+
+/* ===================== HELPERS ===================== */
+const fmt = n => "S/ " + n.toLocaleString("es-PE", {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtInt = n => n.toLocaleString("es-PE");
+
+let currentDay = "total";
+let searchTerm = "";
+
+/* ===================== RENDER ===================== */
+function renderHero(day){
+  const d = DAYS[day];
+  document.getElementById("heroEyebrow").textContent = d.eyebrow;
+  document.getElementById("heroGanancia").textContent = fmt(d.kpi.ganancia);
+  document.getElementById("heroIngresos").textContent = fmt(d.kpi.ingresos);
+  document.getElementById("heroInversion").textContent = fmt(d.kpi.inversion);
+  document.getElementById("heroPolladas").textContent = fmtInt(d.kpi.polladas);
+}
+
+function renderKPIs(day){
+  const d = DAYS[day];
+  const items = [
+    {label:"Polladas vendidas", value: fmtInt(d.kpi.polladas)},
+    {label:"Ingresos", value: fmt(d.kpi.ingresos)},
+    {label:"Inversión", value: fmt(d.kpi.inversion)},
+    {label:"Ganancia neta", value: fmt(d.kpi.ganancia), pos:true},
+    {label:"Adelanto pagado", value: fmt(d.kpi.adelanto)},
+    {label:"Falta por cancelar", value: fmt(d.kpi.falta)}
+  ];
+  document.getElementById("kpiRow").innerHTML = items.map(it =>
+    `<div class="kpi"><p class="label">${it.label}</p><p class="value ${it.pos?'pos':''}">${it.value}</p></div>`
+  ).join("");
+}
+
+function renderComparativo(){
+  const metrics = [
+    {label:"Ingresos", sab: DAYS.sabado.kpi.ingresos, dom: DAYS.domingo.kpi.ingresos},
+    {label:"Inversión", sab: DAYS.sabado.kpi.inversion, dom: DAYS.domingo.kpi.inversion},
+    {label:"Ganancia", sab: DAYS.sabado.kpi.ganancia, dom: DAYS.domingo.kpi.ganancia}
+  ];
+  const max = Math.max(...metrics.flatMap(m=>[m.sab,m.dom]));
+  const el = document.getElementById("comparativo");
+  el.innerHTML = metrics.map(m => `
+    <div class="bar-group">
+      <div class="bar-pair">
+        <div class="bar sabado" style="height:${(m.sab/max*160).toFixed(0)}px;"><span class="val">${fmt(m.sab)}</span></div>
+        <div class="bar domingo" style="height:${(m.dom/max*160).toFixed(0)}px;"><span class="val">${fmt(m.dom)}</span></div>
+      </div>
+      <div class="glabel">${m.label}</div>
+    </div>
+  `).join("");
+}
+
+function renderRanking(day){
+  const d = DAYS[day];
+  const max = Math.max(...d.vendedores.map(v=>v.monto));
+  document.getElementById("rankingSub").textContent =
+    day === "total" ? "Cantidad de polladas y monto recaudado por cada responsable, sumando ambos días"
+    : `Cantidad de polladas y monto recaudado por cada responsable — ${d.label}`;
+  document.getElementById("ranking").innerHTML = d.vendedores.map(v => `
+    <div class="rank-row">
+      <div class="name">${v.nombre}</div>
+      <div class="track"><div class="fill" style="width:${(v.monto/max*100).toFixed(1)}%;"></div></div>
+      <div class="amt">${fmt(v.monto)}</div>
+    </div>
+  `).join("");
+}
+
+function renderPiezas(day){
+  const d = DAYS[day];
+  const max = Math.max(d.piezas.pierna, d.piezas.pecho, 1);
+  document.getElementById("piezas").innerHTML = `
+    <div class="piece-row">
+      <div>Pierna</div>
+      <div class="track"><div class="fill" style="width:${(d.piezas.pierna/max*100).toFixed(1)}%;"></div></div>
+      <div class="amt">${fmtInt(d.piezas.pierna)}</div>
+    </div>
+    <div class="piece-row">
+      <div>Pecho</div>
+      <div class="track"><div class="fill pecho" style="width:${(d.piezas.pecho/max*100).toFixed(1)}%;"></div></div>
+      <div class="amt">${fmtInt(d.piezas.pecho)}</div>
+    </div>
+    <p class="note">Solo cuenta los pedidos donde se especificó el corte; ${fmtInt(d.kpi.polladas - (d.piezas.pierna + d.piezas.pecho) >= 0 ? d.kpi.polladas : 0)} unidades fueron vendidas sin preferencia registrada.</p>
+  `;
+}
+
+function renderInversion(day){
+  const d = DAYS[day];
+  const pctAdelanto = (d.kpi.adelanto / d.kpi.inversion * 100).toFixed(1);
+  const pctFalta = (100 - pctAdelanto).toFixed(1);
+  document.getElementById("inversion").innerHTML = `
+    <div class="inv-track">
+      <div class="inv-fill adelanto" style="width:${pctAdelanto}%;"></div>
+      <div class="inv-fill falta" style="width:${pctFalta}%;"></div>
+    </div>
+  `;
+  document.getElementById("invLegend").innerHTML = `
+    <span>Adelantado: <b>${fmt(d.kpi.adelanto)}</b> (${pctAdelanto}%)</span>
+    <span>Falta cancelar: <b>${fmt(d.kpi.falta)}</b> (${pctFalta}%)</span>
+    <span>Inversión total: <b>${fmt(d.kpi.inversion)}</b></span>
+  `;
+}
+
+function renderTabla(day, term){
+  const d = DAYS[day];
+  document.getElementById("colDay").style.display = day === "total" ? "table-cell" : "none";
+  const t = term.trim().toLowerCase();
+  const rows = d.pedidos.filter(p =>
+    !t || p.comprador.toLowerCase().includes(t) || p.responsable.toLowerCase().includes(t) || p.entrega.toLowerCase().includes(t)
+  );
+  document.getElementById("tableCount").textContent = `${rows.length} pedido${rows.length===1?'':'s'}`;
+  document.getElementById("tableBody").innerHTML = rows.map(p => `
+    <tr>
+      ${day === "total" ? `<td class="day-tag">${p.dia}</td>` : ""}
+      <td>${p.entrega}</td>
+      <td>${p.responsable}</td>
+      <td>${p.comprador}</td>
+      <td class="num">${p.cantidad}</td>
+      <td class="num">${fmt(p.monto)}</td>
+      <td class="num">${p.pierna || 0}</td>
+      <td class="num">${p.pecho || 0}</td>
+    </tr>
+  `).join("");
+}
+
+function renderAll(day){
+  renderHero(day);
+  renderKPIs(day);
+  renderRanking(day);
+  renderPiezas(day);
+  renderInversion(day);
+  renderTabla(day, searchTerm);
+}
+
+/* ===================== CARGA EN TIEMPO REAL ===================== */
+async function cargarDatos() {
+  if (!API_URL || API_URL.includes("PEGA_AQUI")) {
+    console.warn("Falta configurar API_URL con la URL del Apps Script.");
+    construirDias();
+    return;
+  }
+
+  try {
+    const response = await fetch(API_URL + "?t=" + Date.now(), {
+      cache: "no-store"
+    });
+
+    if (!response.ok) throw new Error("HTTP " + response.status);
+
+    const json = await response.json();
+    if (json.error) throw new Error(json.error);
+
+    DATA.sabado.pedidos = json.sabado || [];
+    DATA.domingo.pedidos = json.domingo || [];
+
+    construirDias();
+    renderComparativo();
+    renderAll(currentDay);
+
+    const fecha = json.actualizado
+      ? new Date(json.actualizado).toLocaleTimeString("es-PE")
+      : new Date().toLocaleTimeString("es-PE");
+
+    let footer = document.querySelector("footer");
+    footer.textContent =
+      `Dashboard conectado a Google Sheets · Última actualización: ${fecha} · Se actualiza automáticamente cada 30 segundos.`;
+
+  } catch (err) {
+    console.error("No se pudieron cargar los datos:", err);
+    const footer = document.querySelector("footer");
+    footer.textContent =
+      "No se pudo actualizar Google Sheets. Se conservarán los últimos datos disponibles.";
+  }
+}
+
+/* ===================== EVENTS ===================== */
+document.getElementById("tabs").addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  currentDay = btn.dataset.day;
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("active", b===btn));
+  renderAll(currentDay);
+});
+
+document.getElementById("searchInput").addEventListener("input", e => {
+  searchTerm = e.target.value;
+  renderTabla(currentDay, searchTerm);
+});
+
+/* ===================== INIT ===================== */
+construirDias();
+renderComparativo();
+renderAll(currentDay);
+cargarDatos();
+setInterval(cargarDatos, 30000);
+</script>
+</body>
+</html>
