@@ -294,16 +294,11 @@
 
 <script>
 /* ===================== DATOS ===================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbzwh2iuoWanBDey7zcjYL8cxn-vXxSOmiESDOk6UN05cIe-gTGPk-MImuEC3sSDCY6U/exec";
-
-const COSTO_UNIDAD = {
-  sabado: 10,
-  domingo: 9.80
-};
+const API_URL = "https://script.google.com/macros/s/AKfycbw0tLjQSC8pmjG2A1dxPwajX3_qm5FyXDgcCSyE3HHO0CXmmE2eHduxbVLR_QMpz0tt/exec";
 
 let DATA = {
-  sabado: { pedidos: [] },
-  domingo: { pedidos: [] }
+  sabado: { pedidos: [], resumen: {} },
+  domingo: { pedidos: [], resumen: {} }
 };
 
 const DAYS = {};
@@ -311,13 +306,7 @@ const DAYS = {};
 function construirDias() {
   for (const day of ["sabado", "domingo"]) {
     const pedidos = DATA[day].pedidos || [];
-    const polladas = pedidos.reduce((s,p) => s + Number(p.cantidad || 0), 0);
-    const ingresos = pedidos.reduce((s,p) => s + Number(p.monto || 0), 0);
-    const inversion = polladas * COSTO_UNIDAD[day];
-
-    // Se conservan los adelantos del dashboard original.
-    const adelanto = day === "sabado" ? 150 : 600;
-    const falta = Math.max(0, inversion - adelanto);
+    const resumen = DATA[day].resumen || {};
 
     const piezas = {
       pierna: pedidos.reduce((s,p) => s + Number(p.pierna || 0), 0),
@@ -336,10 +325,14 @@ function construirDias() {
       label: day === "sabado" ? "Sábado" : "Domingo",
       eyebrow: day === "sabado" ? "Sábado 06 de setiembre" : "Domingo 07 de setiembre",
       kpi: {
-        polladas, precioUnidad: 20, ingresos,
-        costoUnidad: COSTO_UNIDAD[day],
-        inversion, adelanto, falta,
-        ganancia: ingresos - inversion
+        polladas: resumen.polladas || 0,
+        precioUnidad: 20,
+        ingresos: resumen.ingresos || 0,
+        costoUnidad: resumen.costoUnidad || 0,
+        inversion: resumen.inversion || 0,
+        adelanto: resumen.adelanto || 0,
+        falta: resumen.falta || 0,
+        ganancia: resumen.ganancia || 0
       },
       piezas,
       vendedores: Object.values(vendedoresMap).sort((a,b) => b.monto - a.monto),
@@ -525,8 +518,10 @@ async function cargarDatos() {
     const json = await response.json();
     if (json.error) throw new Error(json.error);
 
-    DATA.sabado.pedidos = json.sabado || [];
-    DATA.domingo.pedidos = json.domingo || [];
+    DATA.sabado.pedidos = (json.sabado && json.sabado.pedidos) || [];
+    DATA.sabado.resumen = (json.sabado && json.sabado.resumen) || {};
+    DATA.domingo.pedidos = (json.domingo && json.domingo.pedidos) || [];
+    DATA.domingo.resumen = (json.domingo && json.domingo.resumen) || {};
 
     construirDias();
     renderComparativo();
