@@ -48,8 +48,22 @@
     letter-spacing:.2px;
   }
   header p{margin:0;color:#C9BBA6;font-size:.95rem;}
-  nav.tabs{display:flex;gap:.4rem;}
-  nav.tabs button{
+  nav.tabs-bar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--charcoal);
+    border-top:1px solid #4A3E31;
+    border-bottom:1px solid #4A3E31;
+    box-shadow:0 6px 14px -8px rgba(0,0,0,.35);
+  }
+  nav.tabs-bar .wrap{
+    display:flex;
+    gap:.4rem;
+    padding:.9rem 1.5rem;
+    justify-content:flex-start;
+  }
+  nav.tabs-bar button{
     font-family:var(--font-body);
     font-size:.9rem;
     font-weight:600;
@@ -60,12 +74,12 @@
     cursor:pointer;
     border-radius:0;
   }
-  nav.tabs button.active{
+  nav.tabs-bar button.active{
     background:var(--ember);
     border-color:var(--ember);
     color:#FFF1E6;
   }
-  nav.tabs button:hover:not(.active){border-color:#7A6A56;}
+  nav.tabs-bar button:hover:not(.active){border-color:#7A6A56;}
 
   /* Hero */
   .hero{
@@ -210,13 +224,18 @@
       <h1>Pollada Pro Salud</h1>
       <p>Dashboard de ventas, inversión y ganancia</p>
     </div>
-    <nav class="tabs" id="tabs">
+  </div>
+</header>
+
+<nav class="tabs-bar">
+  <div class="wrap">
+    <div class="tabs" id="tabs">
       <button data-day="sabado">Sábado 05/09</button>
       <button data-day="domingo">Domingo 06/09</button>
       <button data-day="total" class="active">Total evento</button>
-    </nav>
+    </div>
   </div>
-</header>
+</nav>
 
 <div class="wrap">
 
@@ -233,7 +252,7 @@
 
   <div class="kpi-row" id="kpiRow"></div>
 
-  <section>
+  <section id="comparativoSection">
     <h2>Sábado vs. domingo</h2>
     <p class="sub">Comparación de ingresos, inversión y ganancia entre los dos días</p>
     <div class="barchart" id="comparativo"></div>
@@ -294,7 +313,7 @@
 
 <script>
 /* ===================== DATOS ===================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbw0tLjQSC8pmjG2A1dxPwajX3_qm5FyXDgcCSyE3HHO0CXmmE2eHduxbVLR_QMpz0tt/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzwh2iuoWanBDey7zcjYL8cxn-vXxSOmiESDOk6UN05cIe-gTGPk-MImuEC3sSDCY6U/exec";
 
 let DATA = {
   sabado: { pedidos: [], resumen: {} },
@@ -498,6 +517,7 @@ function renderAll(day){
   renderPiezas(day);
   renderInversion(day);
   renderTabla(day, searchTerm);
+  document.getElementById("comparativoSection").style.display = (day === "total") ? "" : "none";
 }
 
 /* ===================== CARGA EN TIEMPO REAL ===================== */
