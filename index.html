@@ -152,10 +152,11 @@
   .swatch.domingo{background:var(--amber);}
 
   /* Ranking horizontal */
-  .rank-row{display:grid;grid-template-columns:140px 1fr 90px;gap:.9rem;align-items:center;margin-bottom:.65rem;}
+  .rank-row{display:grid;grid-template-columns:140px 1fr 70px 90px;gap:.9rem;align-items:center;margin-bottom:.65rem;}
   .rank-row .name{font-size:.88rem;font-weight:600;}
   .rank-row .track{height:13px;background:var(--cream-2);position:relative;}
   .rank-row .fill{height:100%;background:var(--ember);}
+  .rank-row .qty{font-family:var(--font-mono);font-size:.82rem;text-align:right;color:var(--ink-soft);}
   .rank-row .amt{font-family:var(--font-mono);font-size:.82rem;text-align:right;color:var(--ink-soft);}
 
   /* Piezas + inversion two-col layout */
@@ -448,6 +449,7 @@ function renderRanking(day){
     <div class="rank-row">
       <div class="name">${v.nombre}</div>
       <div class="track"><div class="fill" style="width:${(v.monto/max*100).toFixed(1)}%;"></div></div>
+      <div class="qty">${fmtInt(v.cantidad)} u.</div>
       <div class="amt">${fmt(v.monto)}</div>
     </div>
   `).join("");
